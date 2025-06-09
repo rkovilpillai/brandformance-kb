@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base - Team Hub</title>
+    <style>
+        :root {
+            /* Professional Color Palette */
+            --primary-blue: #2563eb;
+            --primary-blue-hover: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            --secondary-purple: #7c3aed;
+            --secondary-purple-hover: #6d28d9;
+            
+            /* Neutral Grays */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Semantic Colors */
+            --success-green: #10b981;
+            --success-green-light: #34d399;
+            --warning-amber: #f59e0b;
+            --error-red: #ef4444;
+            
+            /* Background */
+            --bg-primary: #ffffff;
+            --bg-secondary: var(--gray-50);
+            --bg-dark: var(--gray-900);
+            --bg-card: #ffffff;
+            
+            /* Text */
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --text-muted: var(--gray-500);
+            
+            /* Borders */
+            --border-color: var(--gray-200);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 85%;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 48px 32px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            border-radius: var(--border-radius);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Loading Section */
+        .loading-section {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Data Source Indicator */
+        .data-source-indicator {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 12px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            animation: slideInFromTop 0.5s ease-out;
+        }
+
+        .source-indicator-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .source-indicator-icon {
+            font-size: 1.2rem;
+        }
+
+        .source-indicator-text {
+            font-weight: 600;
+        }
+
+        .source-indicator-path {
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .source-indicator-time {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Error Section */
+        .error-section {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-secondary);
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .error-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .error-actions {
+            margin-top: 20px;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Knowledge Base Layout */
+        .knowledge-base {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 32px;
+            min-height: 700px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--gray-800), var(--gray-700));
+            color: white;
+            padding: 24px;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .search-box {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--gray-50);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Department Sections */
+        .department-section {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .department-section:last-child {
+            border-bottom: none;
+        }
+
+        .department-header {
+            background: var(--gray-50);
+            padding: 20px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .department-header:hover {
+            background: var(--gray-100);
+            color: var(--primary-blue);
+        }
+
+        .department-toggle {
+            transition: transform 0.2s ease;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .department-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .department-content.expanded {
+            max-height: 800px;
+        }
+
+        /* Section Links */
+        .section-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .section-link:hover {
+            background: var(--gray-50);
+            border-left-color: var(--primary-blue);
+            color: var(--primary-blue);
+            padding-left: 28px;
+        }
+
+        .section-link.active {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            border-left-color: var(--secondary-purple);
+            color: white;
+        }
+
+        .section-link.active:hover {
+            padding-left: 24px;
+        }
+
+        .resource-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--gray-100);
+        }
+
+        .section-link.active .resource-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            min-height: 600px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: linear-gradient(135deg, var(--gray-800), var(--gray-700));
+            color: white;
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .content-breadcrumb {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        .content-body {
+            padding: 40px;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+        }
+
+        .resource-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-blue);
+        }
+
+        .resource-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .resource-card .resource-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+            color: white;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .resource-info h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .resource-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-blue-hover), var(--primary-blue));
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            border-color: var(--gray-300);
+            transform: translateY(-1px);
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-secondary);
+        }
+
+        .welcome-message h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .welcome-message p {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 40px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .knowledge-base {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+            
+            .content-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .source-indicator-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .resource-card {
+                padding: 24px;
+            }
+            
+            .content-header {
+                padding: 24px;
+            }
+            
+            .content-body {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>📚 Knowledge Base</h1>
+                <p>Your centralized hub for tools, resources, and documentation</p>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        🔄 Refresh Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadData()">
+                        📥 Download Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Section -->
+        <div class="loading-section" id="loadingSection">
+            <div class="loading-spinner"></div>
+            <h3>Loading Knowledge Base...</h3>
+            <p id="loadingStatus">Fetching data from server...</p>
+        </div>
+
+        <!-- Data Source Indicator -->
+        <div id="dataSourceIndicator" class="data-source-indicator hidden">
+            <div class="source-indicator-content">
+                <span class="source-indicator-icon">🌐</span>
+                <span class="source-indicator-text">Data loaded from</span>
+                <span class="source-indicator-path" id="sourcePath">data/uploads/departments.csv</span>
+                <span class="source-indicator-time" id="sourceTime"></span>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="statsSection" class="stats hidden">
+            <div class="stat-card">
+                <div class="stat-number" id="departmentCount">0</div>
+                <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="sectionCount">0</div>
+                <div class="stat-label">Sections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="resourceCount">0</div>
+                <div class="stat-label">Resources</div>
+            </div>
+        </div>
+
+        <!-- Main Knowledge Base Interface -->
+        <div id="knowledgeBase" class="knowledge-base hidden">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar">
+                <div class="sidebar-header">🗂️ Navigation</div>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search resources..." id="searchInput">
+                </div>
+                <div id="sidebarContent"></div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <div class="content-header">
+                    <h2 id="contentTitle">Welcome to Knowledge Base</h2>
+                    <div class="content-breadcrumb" id="contentBreadcrumb">Select a section to explore resources</div>
+                </div>
+                <div class="content-body" id="contentBody">
+                    <div class="welcome-message">
+                        <h3>👋 Welcome to your team's knowledge base</h3>
+                        <p>Browse through the sidebar to access tools, documentation, and resources.</p>
+                        <p>Use the search box to quickly find what you're looking for!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-section hidden" id="errorSection">
+            <div class="error-icon">⚠️</div>
+            <h3>Unable to Load Data</h3>
+            <p id="errorMessage">Could not load knowledge base data from data/uploads/departments.csv</p>
+            <div class="error-actions">
+                <button class="btn btn-primary" onclick="refreshData()">
+                    🔄 Retry
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        let knowledgeData = {};
+        let allResources = [];
+        let currentActiveLink = null;
+        let searchTimeout = null;
+
+        // CSV file paths to try (in order of preference)
+        const csvPaths = [
+            'data/uploads/departments.csv',
+            'data/departments.csv',
+            'departments.csv'
+        ];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Knowledge Base...');
+            setupEventListeners();
+            loadDataFromCSV();
+        });
+
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            
+            // Search events
+            searchInput.addEventListener('input', handleSearch);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+                if (e.key === 'Escape') {
+                    searchInput.value = '';
+                    handleSearch({ target: { value: '' } });
+                }
+            });
+
+            console.log('📡 Event listeners configured');
+        }
+
+        async function loadDataFromCSV() {
+            showLoading('Checking for data files...');
+
+            for (const path of csvPaths) {
+                try {
+                    console.log(`🔍 Trying to load from: ${path}`);
+                    updateLoadingStatus(`Trying ${path}...`);
+                    
+                    const response = await fetch(path);
+                    
+                    if (response.ok) {
+                        const csvContent = await response.text();
+                        
+                        if (csvContent && csvContent.trim().length > 0) {
+                            console.log(`✅ Found data at: ${path}`);
+                            await processCSVData(csvContent, path);
+                            return; // Success! Exit the function
+                        }
+                    } else {
+                        console.log(`❌ Failed: ${path} - ${response.status} ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.log(`❌ Error loading ${path}:`, error.message);
+                }
+            }
+
+            // If we get here, no data source worked
+            showError('Could not find data file. Please ensure data/uploads/departments.csv exists.');
+        }
+
+        async function processCSVData(csvContent, sourcePath) {
+            try {
+                updateLoadingStatus('Processing CSV data...');
+                
+                const lines = csvContent.trim().split('\n');
+                
+                if (lines.length < 2) {
+                    throw new Error('CSV file must contain at least a header row and one data row');
+                }
+
+                // Parse headers
+                const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+                const requiredHeaders = ['department', 'section', 'name'];
+                
+                const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+                if (missingHeaders.length > 0) {
+                    throw new Error(`Missing required columns: ${missingHeaders.join(', ')}`);
+                }
+
+                // Create header mapping
+                const headerMap = {};
+                headers.forEach((header, index) => {
+                    headerMap[header] = index;
+                });
+
+                // Parse data
+                const newKnowledgeData = {};
+                const newAllResources = [];
+                let validRows = 0;
+
+                for (let i = 1; i < lines.length; i++) {
+                    const values = parseCSVLine(lines[i]);
+                    if (values.length < headers.length) continue;
+
+                    const department = values[headerMap.department]?.trim() || '';
+                    const section = values[headerMap.section]?.trim() || '';
+                    const name = values[headerMap.name]?.trim() || '';
+                    const logo = values[headerMap.logo]?.trim() || '';
+                    const url = values[headerMap.url]?.trim() || '';
+
+                    if (!department || !section || !name) continue;
+
+                    // Initialize department and section
+                    if (!newKnowledgeData[department]) {
+                        newKnowledgeData[department] = {};
+                    }
+                    if (!newKnowledgeData[department][section]) {
+                        newKnowledgeData[department][section] = [];
+                    }
+
+                    const resource = { name, logo, url, department, section };
+                    newKnowledgeData[department][section].push(resource);
+                    newAllResources.push(resource);
+                    validRows++;
+                }
+
+                if (validRows === 0) {
+                    throw new Error('No valid data rows found in CSV file');
+                }
+
+                // Store data
+                knowledgeData = newKnowledgeData;
+                allResources = newAllResources;
+
+                // Update UI
+                hideLoading();
+                showDataSourceIndicator(sourcePath, validRows);
+                updateStats();
+                renderKnowledgeBase();
+                showInterface();
+
+                console.log(`✅ Loaded ${validRows} resources from ${sourcePath}`);
+
+            } catch (error) {
+                showError(`Failed to process CSV: ${error.message}`);
+            }
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result.map(item => item.replace(/^"|"$/g, ''));
+        }
+
+        function showLoading(message) {
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.getElementById('errorSection').classList.add('hidden');
+            document.getElementById('knowledgeBase').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('dataSourceIndicator').classList.add('hidden');
+            updateLoadingStatus(message);
+        }
+
+        function updateLoadingStatus(message) {
+            const statusEl = document.getElementById('loadingStatus');
+            if (statusEl) statusEl.textContent = message;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSection').classList.add('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('errorSection').classList.remove('hidden');
+            document.getElementById('loadingSection').classList.add('hidden');
+            document.getElementById('knowledgeBase').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('dataSourceIndicator').classList.add('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function showInterface() {
+            document.getElementById('knowledgeBase').classList.remove('hidden');
+            document.getElementById('statsSection').classList.remove('hidden');
+            document.getElementById('errorSection').classList.add('hidden');
+        }
+
+        function showDataSourceIndicator(path, resourceCount) {
+            const indicator = document.getElementById('dataSourceIndicator');
+            const pathEl = document.getElementById('sourcePath');
+            const timeEl = document.getElementById('sourceTime');
+            
+            if (pathEl) pathEl.textContent = path;
+            if (timeEl) timeEl.textContent = `• ${resourceCount} resources • ${new Date().toLocaleString()}`;
+            if (indicator) indicator.classList.remove('hidden');
+        }
+
+        function updateStats() {
+            const departmentCount = Object.keys(knowledgeData).length;
+            let sectionCount = 0;
+            let resourceCount = 0;
+
+            Object.values(knowledgeData).forEach(department => {
+                sectionCount += Object.keys(department).length;
+                Object.values(department).forEach(section => {
+                    resourceCount += section.length;
+                });
+            });
+
+            document.getElementById('departmentCount').textContent = departmentCount;
+            document.getElementById('sectionCount').textContent = sectionCount;
+            document.getElementById('resourceCount').textContent = resourceCount;
+        }
+
+        function renderKnowledgeBase() {
+            const sidebarContent = document.getElementById('sidebarContent');
+            sidebarContent.innerHTML = '';
+
+            Object.entries(knowledgeData).forEach(([departmentName, sections]) => {
+                const departmentDiv = document.createElement('div');
+                departmentDiv.className = 'department-section';
+
+                const departmentHeader = document.createElement('div');
+                departmentHeader.className = 'department-header';
+                departmentHeader.innerHTML = `
+                    <span>🏢 ${departmentName}</span>
+                    <span class="department-toggle">▼</span>
+                `;
+
+                const departmentContent = document.createElement('div');
+                departmentContent.className = 'department-content expanded';
+
+                Object.entries(sections).forEach(([sectionName, resources]) => {
+                    const sectionLink = document.createElement('a');
+                    sectionLink.href = '#';
+                    sectionLink.className = 'section-link';
+                    sectionLink.innerHTML = `
+                        <div class="resource-icon">📁</div>
+                        <span>${sectionName} (${resources.length})</span>
+                    `;
+                    sectionLink.onclick = (e) => {
+                        e.preventDefault();
+                        showSection(departmentName, sectionName, resources, sectionLink);
+                    };
+                    departmentContent.appendChild(sectionLink);
+                });
+
+                departmentHeader.onclick = () => toggleDepartment(departmentContent, departmentHeader.querySelector('.department-toggle'));
+                
+                departmentDiv.appendChild(departmentHeader);
+                departmentDiv.appendChild(departmentContent);
+                sidebarContent.appendChild(departmentDiv);
+            });
+        }
+
+        function showSection(departmentName, sectionName, resources, linkElement) {
+            // Update active link styling
+            if (currentActiveLink) {
+                currentActiveLink.classList.remove('active');
+            }
+            linkElement.classList.add('active');
+            currentActiveLink = linkElement;
+
+            // Update content header
+            document.getElementById('contentTitle').textContent = `${departmentName} - ${sectionName}`;
+            document.getElementById('contentBreadcrumb').textContent = `${departmentName} > ${sectionName} (${resources.length} resources)`;
+            
+            // Show resources in grid
+            const contentBody = document.getElementById('contentBody');
+            
+            if (resources.length === 0) {
+                contentBody.innerHTML = `
+                    <div class="welcome-message">
+                        <h3>📂 ${sectionName}</h3>
+                        <p>This section doesn't contain any resources yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentBody.innerHTML = '<div class="content-grid"></div>';
+            const contentGrid = contentBody.querySelector('.content-grid');
+
+            resources.forEach(resource => {
+                const resourceCard = document.createElement('div');
+                resourceCard.className = 'resource-card';
+                resourceCard.innerHTML = `
+                    <div class="resource-header">
+                        <div class="resource-icon">
+                            ${getIconForResource(resource.logo)}
+                        </div>
+                        <div class="resource-info">
+                            <h4>${escapeHtml(resource.name)}</h4>
+                            <p>Resource from ${escapeHtml(sectionName)}</p>
+                        </div>
+                    </div>
+                    <div class="resource-actions">
+                        <a href="${escapeHtml(resource.url || '#')}" target="_blank" 
+                           class="btn btn-primary" ${!resource.url ? 'style="opacity:0.5;pointer-events:none;"' : ''}>
+                            🔗 Open Resource
+                        </a>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('${escapeHtml(resource.url || '')}')" 
+                                ${!resource.url ? 'disabled style="opacity:0.5;"' : ''}>
+                            📋 Copy Link
+                        </button>
+                    </div>
+                `;
+                contentGrid.appendChild(resourceCard);
+            });
+        }
+
+        function getIconForResource(logo) {
+            const iconMap = {
+                'ppt.svg': '📊',
+                'pptx': '📊',
+                'sheets.svg': '📈',
+                'xlsx': '📈',
+                'xls': '📈',
+                'doc.svg': '📝',
+                'docx': '📝',
+                'pdf.svg': '📄',
+                'pdf': '📄',
+                'json.svg': '⚙️',
+                'json': '⚙️',
+                'video.svg': '🎥',
+                'mp4': '🎥',
+                'studio.png': '🎨',
+                'xandr.png': '📱',
+                'dv360.png': '📺',
+                'bulkUpload.png': '⬆️',
+                'appScript.png': '⚙️',
+                'dataStudio.svg': '📊'
+            };
+
+            if (!logo) return '📄';
+            if (iconMap[logo]) return iconMap[logo];
+            
+            const extension = logo.split('.').pop()?.toLowerCase();
+            return iconMap[extension] || '📄';
+        }
+
+        function toggleDepartment(departmentContent, toggleIcon) {
+            const isExpanded = departmentContent.classList.contains('expanded');
+            
+            if (isExpanded) {
+                departmentContent.classList.remove('expanded');
+                toggleIcon.textContent = '▶';
+            } else {
+                departmentContent.classList.add('expanded');
+                toggleIcon.textContent = '▼';
+            }
+        }
+
+        function handleSearch(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterResources(e.target.value);
+            }, 300);
+        }
+
+        function filterResources(searchTerm) {
+            if (!searchTerm.trim()) {
+                renderKnowledgeBase();
+                return;
+            }
+
+            const filteredData = {};
+            const term = searchTerm.toLowerCase();
+
+            Object.entries(knowledgeData).forEach(([dept, sections]) => {
+                Object.entries(sections).forEach(([section, resources]) => {
+                    const matchingResources = resources.filter(resource =>
+                        resource.name.toLowerCase().includes(term) ||
+                        resource.department.toLowerCase().includes(term) ||
+                        resource.section.toLowerCase().includes(term) ||
+                        (resource.url && resource.url.toLowerCase().includes(term))
+                    );
+
+                    if (matchingResources.length > 0) {
+                        if (!filteredData[dept]) filteredData[dept] = {};
+                        filteredData[dept][section] = matchingResources;
+                    }
+                });
+            });
+
+            renderFilteredResults(filteredData);
+        }
+
+        function renderFilteredResults(filteredData) {
+            const sidebarContent = document.getElementById('sidebarContent');
+            
+            if (Object.keys(filteredData).length === 0) {
+                sidebarContent.innerHTML = '<div class="no-results">No resources found</div>';
+                return;
+            }
+
+            sidebarContent.innerHTML = '';
+
+            Object.entries(filteredData).forEach(([departmentName, sections]) => {
+                const departmentDiv = document.createElement('div');
+                departmentDiv.className = 'department-section';
+
+                const departmentHeader = document.createElement('div');
+                departmentHeader.className = 'department-header';
+                departmentHeader.innerHTML = `
+                    <span>🏢 ${departmentName}</span>
+                    <span class="department-toggle">▼</span>
+                `;
+
+                const departmentContent = document.createElement('div');
+                departmentContent.className = 'department-content expanded';
+
+                Object.entries(sections).forEach(([sectionName, resources]) => {
+                    const sectionLink = document.createElement('a');
+                    sectionLink.href = '#';
+                    sectionLink.className = 'section-link';
+                    sectionLink.innerHTML = `
+                        <div class="resource-icon">📁</div>
+                        <span>${sectionName} (${resources.length})</span>
+                    `;
+                    sectionLink.onclick = (e) => {
+                        e.preventDefault();
+                        showSection(departmentName, sectionName, resources, sectionLink);
+                    };
+                    departmentContent.appendChild(sectionLink);
+                });
+
+                departmentHeader.onclick = () => toggleDepartment(departmentContent, departmentHeader.querySelector('.department-toggle'));
+                
+                departmentDiv.appendChild(departmentHeader);
+                departmentDiv.appendChild(departmentContent);
+                sidebarContent.appendChild(departmentDiv);
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyToClipboard(text) {
+            if (!text) return;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Show temporary success message
+                const tempMsg = document.createElement('div');
+                tempMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #10b981;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    animation: slideInFromRight 0.3s ease-out;
+                `;
+                tempMsg.textContent = '✅ Link copied to clipboard!';
+                document.body.appendChild(tempMsg);
+                
+                setTimeout(() => {
+                    tempMsg.remove();
+                }, 3000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    alert('Link copied to clipboard!');
+                } catch (error) {
+                    alert('Failed to copy link');
+                }
+                
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function downloadData() {
+            if (allResources.length === 0) {
+                alert('No data to download');
+                return;
+            }
+
+            try {
+                // Convert data back to CSV format
+                let csv = 'Department,Section,Name,Logo,Url\n';
+                
+                allResources.forEach(resource => {
+                    const row = [
+                        resource.department || '',
+                        resource.section || '',
+                        resource.name || '',
+                        resource.logo || '',
+                        resource.url || ''
+                    ].map(field => `"${field.replace(/"/g, '""')}"`).join(',');
+                    
+                    csv += row + '\n';
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `knowledge-base-${new Date().toISOString().split('T')[0]}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    // Show success message
+                    const tempMsg = document.createElement('div');
+                    tempMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #10b981;
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                        z-index: 10000;
+                    `;
+                    tempMsg.textContent = '✅ Data downloaded successfully!';
+                    document.body.appendChild(tempMsg);
+                    
+                    setTimeout(() => {
+                        tempMsg.remove();
+                    }, 3000);
+                } else {
+                    alert('Download not supported in this browser');
+                }
+            } catch (error) {
+                alert('Error downloading data: ' + error.message);
+            }
+        }
+
+        function refreshData() {
+            console.log('🔄 Refreshing data...');
+            knowledgeData = {};
+            allResources = [];
+            currentActiveLink = null;
+            
+            // Clear search
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            
+            // Reload data
+            loadDataFromCSV();
+        }
+
+        // Add some CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInFromRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('📚 Knowledge Base app loaded and ready!');
+    </script>
+</body>
+</html>
