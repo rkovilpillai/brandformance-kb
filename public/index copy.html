@@ -4,115 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowledge Base - Team Hub</title>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-        // Your Firebase configuration (replace with your actual config)
-        const firebaseConfig = {
-            apiKey: "AIzaSyB-bdAONBUY-kQGkJ5UxVKujU8Ynjsj3Uo",
-            authDomain: "brandformance-wiki.firebaseapp.com",
-            projectId: "brandformance-wiki",
-            storageBucket: "brandformance-wiki.firebasestorage.app",
-            messagingSenderId: "1005063131067",
-            appId: "1:1005063131067:web:6731584b268779207cbe9e"
-            };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        // Store auth functions globally so other scripts can use them
-        window.firebaseAuth = {
-            signIn: () => signInWithPopup(auth, provider),
-            signOut: () => signOut(auth),
-            onAuthStateChanged: (callback) => onAuthStateChanged(auth, callback)
-        };
-
-        // Set up auth state listener when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            setupAuthentication();
-        });
-
-        function setupAuthentication() {
-            const authModal = document.getElementById('authModal');
-            const knowledgeBase = document.getElementById('knowledgeBase');
-            const statsSection = document.getElementById('statsSection');
-            const dataSourceIndicator = document.getElementById('dataSourceIndicator');
-            const userInfo = document.getElementById('userInfo');
-            const signOutBtn = document.getElementById('signOutBtn');
-
-            // Auth state listener
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    // User is signed in
-                    console.log('User signed in:', user.email);
-                    
-                    // Show main content
-                    authModal.classList.add('hidden');
-                    knowledgeBase.classList.remove('hidden');
-                    statsSection.classList.remove('hidden');
-                    
-                    // Show user info
-                    if (userInfo) {
-                        userInfo.innerHTML = `
-                            <div class="user-avatar">
-                                <img src="${user.photoURL || ''}" alt="${user.displayName || user.email}" onerror="this.style.display='none'">
-                                <span>${user.displayName || user.email}</span>
-                            </div>
-                        `;
-                        userInfo.classList.remove('hidden');
-                    }
-                    
-                    // Load the knowledge base data
-                    if (window.loadDataFromCSV) {
-                        window.loadDataFromCSV();
-                    }
-                } else {
-                    // User is signed out
-                    console.log('User signed out');
-                    
-                    // Hide main content, show auth modal
-                    authModal.classList.remove('hidden');
-                    knowledgeBase.classList.add('hidden');
-                    statsSection.classList.add('hidden');
-                    dataSourceIndicator.classList.add('hidden');
-                    
-                    if (userInfo) {
-                        userInfo.classList.add('hidden');
-                    }
-                }
-            });
-
-            // Sign in button
-            document.getElementById('googleSignIn').addEventListener('click', async () => {
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch (error) {
-                    console.error('Sign in error:', error);
-                    alert('Sign in failed: ' + error.message);
-                }
-            });
-
-            // Sign out button
-            if (signOutBtn) {
-                signOutBtn.addEventListener('click', async () => {
-                    try {
-                        await signOut(auth);
-                    } catch (error) {
-                        console.error('Sign out error:', error);
-                    }
-                });
-            }
-        }
-    </script>
-
     <style>
-        /* Your existing styles PLUS these new auth styles */
-         :root {
+        :root {
             /* Professional Color Palette */
             --primary-blue: #2563eb;
             --primary-blue-hover: #1d4ed8;
@@ -775,116 +668,51 @@
                 padding: 24px;
             }
         }
-
-        /* Auth Modal Styles */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-blue, #2563eb) 0%, var(--secondary-purple, #7c3aed) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .auth-content {
-            background: white;
-            padding: 48px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .auth-content h2 {
-            margin-bottom: 16px;
-            color: var(--text-primary, #111827);
-            font-size: 1.5rem;
-        }
-
-        .auth-content p {
-            margin-bottom: 32px;
-            color: var(--text-secondary, #6b7280);
-        }
-
-        /* User Info Styles */
-        .user-info {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-        }
-
-        .user-avatar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-avatar img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-        }
-
-        .user-avatar span {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-primary, #111827);
-        }
-
-        .sign-out-btn {
-            background: var(--gray-100, #f3f4f6);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: var(--text-secondary, #6b7280);
-        }
-
-        .sign-out-btn:hover {
-            background: var(--gray-200, #e5e7eb);
-        }
-
-        /* Utility class */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Your existing styles continue here... */
-        /* Copy all your existing CSS from the current index.html */
     </style>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
 </head>
 <body>
-    <!-- User Info (shown when authenticated) -->
-    <div id="userInfo" class="user-info hidden">
-        <!-- User info will be populated by JavaScript -->
-        <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
-    </div>
-
-    <!-- Authentication Modal -->
     <div id="authModal" class="auth-modal">
         <div class="auth-content">
-            <h2>🔐 Knowledge Base Access</h2>
-            <p>Please sign in with your Google account to access the team knowledge base.</p>
+            <h2>🔐 Access Required</h2>
+            <p>Please sign in to access the knowledge base</p>
             <button id="googleSignIn" class="btn btn-primary">
-                🔑 Sign in with Google
+            Sign in with Google
             </button>
         </div>
     </div>
+    <!-- Add this to your existing index.html -->
+    <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 
+    const firebaseConfig = {
+    // Your config here
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    // Check auth state
+    onAuthStateChanged(auth, (user) => {
+    if (user && user.email.endsWith('@yourdomain.com')) {
+        // User is authenticated and authorized
+        document.getElementById('knowledgeBase').style.display = 'block';
+        document.getElementById('authModal').style.display = 'none';
+    } else {
+        // Show login
+        document.getElementById('knowledgeBase').style.display = 'none'; 
+        document.getElementById('authModal').style.display = 'flex';
+    }
+    });
+
+    // Sign in function
+    document.getElementById('googleSignIn').onclick = () => {
+    signInWithPopup(auth, provider);
+    };
+    </script>
     <div class="container">
         <!-- Header -->
         <div class="header">
