@@ -943,6 +943,152 @@
 
         /* Your existing styles continue here... */
         /* Copy all your existing CSS from the current index.html */
+        /* FAQ Styles */
+        .faq-container {
+            max-width: 100%;
+        }
+
+        .faq-header {
+            background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+            padding: 32px;
+            border-radius: var(--border-radius);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .faq-header h3 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .faq-search {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .faq-content {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .faq-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .faq-category-title {
+            color: var(--primary-blue);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .faq-item.open {
+            border-color: var(--primary-blue);
+        }
+
+        .faq-question {
+            background: var(--gray-50);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background: var(--gray-100);
+        }
+
+        .faq-item.open .faq-question {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .faq-question-text {
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .faq-toggle {
+            font-size: 0.8rem;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 24px;
+            background: white;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .faq-tags {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .faq-tag {
+            background: var(--primary-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Responsive FAQ */
+        @media (max-width: 768px) {
+            .faq-header {
+                padding: 24px;
+            }
+            
+            .faq-category {
+                padding: 16px;
+            }
+            
+            .faq-question {
+                padding: 16px;
+            }
+            
+            .faq-answer-content {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -976,9 +1122,9 @@
                     <button class="btn btn-primary" onclick="refreshData()">
                         🔄 Refresh Data
                     </button>
-                    <button class="btn btn-secondary" onclick="downloadData()">
+                    <!-- <button class="btn btn-secondary" onclick="downloadData()">
                         📥 Download Data
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -1063,6 +1209,233 @@
         let currentActiveLink = null;
         let searchTimeout = null;
 
+        // Global FAQ data
+        let faqData = [];
+
+            // Load FAQ data
+        async function loadFAQData() {
+                try {
+                    const response = await fetch('data/faq.csv');
+                    if (!response.ok) {
+                        console.log('FAQ data not found, skipping FAQ section');
+                        return;
+                    }
+                    
+                    const csvContent = await response.text();
+                    if (csvContent && csvContent.trim().length > 0) {
+                        processFAQData(csvContent);
+                    }
+                } catch (error) {
+                    console.log('Error loading FAQ data:', error);
+                }
+            }
+
+            // Process FAQ CSV data
+            function processFAQData(csvContent) {
+                try {
+                    const lines = csvContent.trim().split('\n');
+                    if (lines.length < 2) return;
+
+                    const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+                    const headerMap = {};
+                    headers.forEach((header, index) => {
+                        headerMap[header.replace(/\s+/g, '')] = index;
+                    });
+
+                    faqData = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = parseCSVLine(lines[i]);
+                        if (values.length < headers.length) continue;
+
+                        const faq = {
+                            question: values[headerMap.question]?.trim() || '',
+                            answer: values[headerMap.answer]?.trim() || '',
+                            category: values[headerMap.category]?.trim() || '',
+                            subCategory: values[headerMap.subcategory]?.trim() || ''
+                        };
+
+                        if (faq.question && faq.answer) {
+                            faqData.push(faq);
+                        }
+                    }
+
+                    console.log(`✅ Loaded ${faqData.length} FAQ items`);
+                } catch (error) {
+                    console.error('Error processing FAQ data:', error);
+                }
+            }
+
+            // Show FAQ section
+            function showFAQSection(linkElement) {
+                // Update active link styling
+                if (currentActiveLink) {
+                    currentActiveLink.classList.remove('active');
+                }
+                linkElement.classList.add('active');
+                currentActiveLink = linkElement;
+
+                // Update content header
+                document.getElementById('contentTitle').textContent = 'Frequently Asked Questions';
+                document.getElementById('contentBreadcrumb').textContent = `FAQ (${faqData.length} questions)`;
+                
+                // Show FAQ content
+                const contentBody = document.getElementById('contentBody');
+                
+                if (faqData.length === 0) {
+                    contentBody.innerHTML = `
+                        <div class="welcome-message">
+                            <h3>❓ FAQ Section</h3>
+                            <p>FAQ data is being loaded or not available yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Group FAQs by category
+                const faqsByCategory = {};
+                faqData.forEach(faq => {
+                    if (!faqsByCategory[faq.category]) {
+                        faqsByCategory[faq.category] = [];
+                    }
+                    faqsByCategory[faq.category].push(faq);
+                });
+
+                // Render FAQ content
+                contentBody.innerHTML = `
+                    <div class="faq-container">
+                        <div class="faq-header">
+                            <h3>💡 Find answers to common questions</h3>
+                            <div class="faq-search">
+                                <input type="text" id="faqSearch" placeholder="Search FAQs..." class="search-input">
+                            </div>
+                        </div>
+                        <div id="faqContent" class="faq-content"></div>
+                    </div>
+                `;
+
+                renderFAQContent(faqsByCategory);
+                setupFAQSearch();
+            }
+
+            // Render FAQ content
+            function renderFAQContent(faqsByCategory) {
+                const faqContent = document.getElementById('faqContent');
+                faqContent.innerHTML = '';
+
+                Object.entries(faqsByCategory).forEach(([category, faqs]) => {
+                    const categorySection = document.createElement('div');
+                    categorySection.className = 'faq-category';
+                    
+                    const categoryHeader = document.createElement('h4');
+                    categoryHeader.className = 'faq-category-title';
+                    categoryHeader.textContent = `📂 ${category} (${faqs.length})`;
+                    categorySection.appendChild(categoryHeader);
+
+                    faqs.forEach((faq, index) => {
+                        const faqItem = document.createElement('div');
+                        faqItem.className = 'faq-item';
+                        faqItem.innerHTML = `
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <span class="faq-question-text">${escapeHtml(faq.question)}</span>
+                                <span class="faq-toggle">▼</span>
+                            </div>
+                            <div class="faq-answer">
+                                <div class="faq-answer-content">
+                                    ${formatFAQAnswer(faq.answer)}
+                                    ${faq.subCategory ? `<div class="faq-tags"><span class="faq-tag">${escapeHtml(faq.subCategory)}</span></div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        categorySection.appendChild(faqItem);
+                    });
+
+                    faqContent.appendChild(categorySection);
+                });
+            }
+
+            // Format FAQ answer (convert line breaks and handle formatting)
+            function formatFAQAnswer(answer) {
+                return escapeHtml(answer)
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            }
+
+            // Toggle FAQ item
+            function toggleFAQ(questionElement) {
+                const faqItem = questionElement.parentElement;
+                const answer = faqItem.querySelector('.faq-answer');
+                const toggle = questionElement.querySelector('.faq-toggle');
+                
+                const isOpen = faqItem.classList.contains('open');
+                
+                if (isOpen) {
+                    faqItem.classList.remove('open');
+                    toggle.textContent = '▼';
+                } else {
+                    faqItem.classList.add('open');
+                    toggle.textContent = '▲';
+                }
+            }
+
+            // Setup FAQ search
+            function setupFAQSearch() {
+                const searchInput = document.getElementById('faqSearch');
+                let searchTimeout;
+                
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        filterFAQs(e.target.value);
+                    }, 300);
+                });
+            }
+
+            // Filter FAQs based on search
+            function filterFAQs(searchTerm) {
+                if (!searchTerm.trim()) {
+                    // Show all FAQs grouped by category
+                    const faqsByCategory = {};
+                    faqData.forEach(faq => {
+                        if (!faqsByCategory[faq.category]) {
+                            faqsByCategory[faq.category] = [];
+                        }
+                        faqsByCategory[faq.category].push(faq);
+                    });
+                    renderFAQContent(faqsByCategory);
+                    return;
+                }
+
+                const term = searchTerm.toLowerCase();
+                const filteredFAQs = faqData.filter(faq =>
+                    faq.question.toLowerCase().includes(term) ||
+                    faq.answer.toLowerCase().includes(term) ||
+                    faq.category.toLowerCase().includes(term) ||
+                    faq.subCategory.toLowerCase().includes(term)
+                );
+
+                // Group filtered results
+                const filteredByCategory = {};
+                filteredFAQs.forEach(faq => {
+                    if (!filteredByCategory[faq.category]) {
+                        filteredByCategory[faq.category] = [];
+                    }
+                    filteredByCategory[faq.category].push(faq);
+                });
+
+                if (Object.keys(filteredByCategory).length === 0) {
+                    document.getElementById('faqContent').innerHTML = `
+                        <div class="no-results">
+                            <h4>No FAQs found</h4>
+                            <p>No questions match your search: "${escapeHtml(searchTerm)}"</p>
+                        </div>
+                    `;
+                } else {
+                    renderFAQContent(filteredByCategory);
+                }
+            }
+
+
         // CSV file paths to try (in order of preference)
         const csvPaths = [
             'data/uploads/departments.csv',
@@ -1114,6 +1487,7 @@
                         if (csvContent && csvContent.trim().length > 0) {
                             console.log(`✅ Found data at: ${path}`);
                             await processCSVData(csvContent, path);
+                            await loadFAQData();
                             return; // Success! Exit the function
                         }
                     } else {
@@ -1292,6 +1666,38 @@
             const sidebarContent = document.getElementById('sidebarContent');
             sidebarContent.innerHTML = '';
 
+            const faqSection = document.createElement('div');
+            faqSection.className = 'department-section';
+            
+            const faqHeader = document.createElement('div');
+            faqHeader.className = 'department-header';
+            faqHeader.innerHTML = `
+                <span>❓ FAQ</span>
+                <span class="department-toggle">▼</span>
+            `;
+            
+            const faqContent = document.createElement('div');
+            faqContent.className = 'department-content expanded';
+            
+            const faqLink = document.createElement('a');
+            faqLink.href = '#';
+            faqLink.className = 'section-link';
+            faqLink.innerHTML = `
+                <div class="resource-icon">📋</div>
+                <span>Frequently Asked Questions</span>
+            `;
+            faqLink.onclick = (e) => {
+                e.preventDefault();
+                showFAQSection(faqLink);
+            };
+            
+            faqContent.appendChild(faqLink);
+            faqHeader.onclick = () => toggleDepartment(faqContent, faqHeader.querySelector('.department-toggle'));
+            
+            faqSection.appendChild(faqHeader);
+            faqSection.appendChild(faqContent);
+            sidebarContent.appendChild(faqSection);
+
             Object.entries(knowledgeData).forEach(([departmentName, sections]) => {
                 const departmentDiv = document.createElement('div');
                 departmentDiv.className = 'department-section';
@@ -1302,6 +1708,41 @@
                     <span>🏢 ${departmentName}</span>
                     <span class="department-toggle">▼</span>
                 `;
+                const matchingFAQs = faqData.filter(faq =>
+        faq.question.toLowerCase().includes(term) ||
+        faq.answer.toLowerCase().includes(term) ||
+        faq.category.toLowerCase().includes(term)
+    );
+
+                // Add FAQ to sidebar if there are matches
+                const sidebarContent = document.getElementById('sidebarContent');
+                sidebarContent.innerHTML = '';
+
+                if (matchingFAQs.length > 0) {
+                    // Add FAQ section with results
+                    const faqSection = document.createElement('div');
+                    faqSection.className = 'department-section';
+                    
+                    const faqHeader = document.createElement('div');
+                    faqHeader.className = 'department-header';
+                    faqHeader.innerHTML = `<span>❓ FAQ (${matchingFAQs.length} matches)</span>`;
+                    
+                    const faqLink = document.createElement('a');
+                    faqLink.href = '#';
+                    faqLink.className = 'section-link';
+                    faqLink.innerHTML = `
+                        <div class="resource-icon">📋</div>
+                        <span>Search Results</span>
+                    `;
+                    faqLink.onclick = (e) => {
+                        e.preventDefault();
+                        showFilteredFAQs(matchingFAQs, searchTerm, faqLink);
+                    };
+                    
+                    faqSection.appendChild(faqHeader);
+                    faqSection.appendChild(faqLink);
+                    sidebarContent.appendChild(faqSection);
+                }
 
                 const departmentContent = document.createElement('div');
                 departmentContent.className = 'department-content expanded';
@@ -1328,6 +1769,30 @@
                 sidebarContent.appendChild(departmentDiv);
             });
         }
+
+        function showFilteredFAQs(faqs, searchTerm, linkElement) {
+                // Similar to showFAQSection but with filtered results
+                if (currentActiveLink) {
+                    currentActiveLink.classList.remove('active');
+                }
+                linkElement.classList.add('active');
+                currentActiveLink = linkElement;
+
+                document.getElementById('contentTitle').textContent = 'FAQ Search Results';
+                document.getElementById('contentBreadcrumb').textContent = `Found ${faqs.length} FAQs matching "${searchTerm}"`;
+                
+                const faqsByCategory = {};
+                faqs.forEach(faq => {
+                    if (!faqsByCategory[faq.category]) {
+                        faqsByCategory[faq.category] = [];
+                    }
+                    faqsByCategory[faq.category].push(faq);
+                });
+
+                const contentBody = document.getElementById('contentBody');
+                contentBody.innerHTML = `<div id="faqContent" class="faq-content"></div>`;
+                renderFAQContent(faqsByCategory);
+            }
 
         function showSection(departmentName, sectionName, resources, linkElement) {
             // Update active link styling
@@ -1434,7 +1899,7 @@
             }, 300);
         }
 
-        function filterResources(searchTerm) {
+        function  filterResources(searchTerm) {
             if (!searchTerm.trim()) {
                 renderKnowledgeBase();
                 return;
@@ -1560,68 +2025,6 @@
                 
                 document.body.removeChild(textArea);
             });
-        }
-
-        function downloadData() {
-            if (allResources.length === 0) {
-                alert('No data to download');
-                return;
-            }
-
-            try {
-                // Convert data back to CSV format
-                let csv = 'Department,Section,Name,Logo,Url\n';
-                
-                allResources.forEach(resource => {
-                    const row = [
-                        resource.department || '',
-                        resource.section || '',
-                        resource.name || '',
-                        resource.logo || '',
-                        resource.url || ''
-                    ].map(field => `"${field.replace(/"/g, '""')}"`).join(',');
-                    
-                    csv += row + '\n';
-                });
-
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                
-                if (link.download !== undefined) {
-                    const url = URL.createObjectURL(blob);
-                    link.setAttribute('href', url);
-                    link.setAttribute('download', `knowledge-base-${new Date().toISOString().split('T')[0]}.csv`);
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    
-                    // Show success message
-                    const tempMsg = document.createElement('div');
-                    tempMsg.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: #10b981;
-                        color: white;
-                        padding: 12px 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                        z-index: 10000;
-                    `;
-                    tempMsg.textContent = '✅ Data downloaded successfully!';
-                    document.body.appendChild(tempMsg);
-                    
-                    setTimeout(() => {
-                        tempMsg.remove();
-                    }, 3000);
-                } else {
-                    alert('Download not supported in this browser');
-                }
-            } catch (error) {
-                alert('Error downloading data: ' + error.message);
-            }
         }
 
         function refreshData() {
