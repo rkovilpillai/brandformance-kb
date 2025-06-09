@@ -1663,112 +1663,79 @@
         }
 
         function renderKnowledgeBase() {
-            const sidebarContent = document.getElementById('sidebarContent');
-            sidebarContent.innerHTML = '';
-
-            const faqSection = document.createElement('div');
-            faqSection.className = 'department-section';
-            
-            const faqHeader = document.createElement('div');
-            faqHeader.className = 'department-header';
-            faqHeader.innerHTML = `
-                <span>❓ FAQ</span>
-                <span class="department-toggle">▼</span>
-            `;
-            
-            const faqContent = document.createElement('div');
-            faqContent.className = 'department-content expanded';
-            
-            const faqLink = document.createElement('a');
-            faqLink.href = '#';
-            faqLink.className = 'section-link';
-            faqLink.innerHTML = `
-                <div class="resource-icon">📋</div>
-                <span>Frequently Asked Questions</span>
-            `;
-            faqLink.onclick = (e) => {
-                e.preventDefault();
-                showFAQSection(faqLink);
-            };
-            
-            faqContent.appendChild(faqLink);
-            faqHeader.onclick = () => toggleDepartment(faqContent, faqHeader.querySelector('.department-toggle'));
-            
-            faqSection.appendChild(faqHeader);
-            faqSection.appendChild(faqContent);
-            sidebarContent.appendChild(faqSection);
-
-            Object.entries(knowledgeData).forEach(([departmentName, sections]) => {
-                const departmentDiv = document.createElement('div');
-                departmentDiv.className = 'department-section';
-
-                const departmentHeader = document.createElement('div');
-                departmentHeader.className = 'department-header';
-                departmentHeader.innerHTML = `
-                    <span>🏢 ${departmentName}</span>
-                    <span class="department-toggle">▼</span>
-                `;
-                const matchingFAQs = faqData.filter(faq =>
-        faq.question.toLowerCase().includes(term) ||
-        faq.answer.toLowerCase().includes(term) ||
-        faq.category.toLowerCase().includes(term)
-    );
-
-                // Add FAQ to sidebar if there are matches
                 const sidebarContent = document.getElementById('sidebarContent');
                 sidebarContent.innerHTML = '';
 
-                if (matchingFAQs.length > 0) {
-                    // Add FAQ section with results
-                    const faqSection = document.createElement('div');
-                    faqSection.className = 'department-section';
-                    
-                    const faqHeader = document.createElement('div');
-                    faqHeader.className = 'department-header';
-                    faqHeader.innerHTML = `<span>❓ FAQ (${matchingFAQs.length} matches)</span>`;
-                    
-                    const faqLink = document.createElement('a');
-                    faqLink.href = '#';
-                    faqLink.className = 'section-link';
-                    faqLink.innerHTML = `
-                        <div class="resource-icon">📋</div>
-                        <span>Search Results</span>
-                    `;
-                    faqLink.onclick = (e) => {
-                        e.preventDefault();
-                        showFilteredFAQs(matchingFAQs, searchTerm, faqLink);
-                    };
-                    
-                    faqSection.appendChild(faqHeader);
-                    faqSection.appendChild(faqLink);
-                    sidebarContent.appendChild(faqSection);
-                }
-
-                const departmentContent = document.createElement('div');
-                departmentContent.className = 'department-content expanded';
-
-                Object.entries(sections).forEach(([sectionName, resources]) => {
-                    const sectionLink = document.createElement('a');
-                    sectionLink.href = '#';
-                    sectionLink.className = 'section-link';
-                    sectionLink.innerHTML = `
-                        <div class="resource-icon">📁</div>
-                        <span>${sectionName} (${resources.length})</span>
-                    `;
-                    sectionLink.onclick = (e) => {
-                        e.preventDefault();
-                        showSection(departmentName, sectionName, resources, sectionLink);
-                    };
-                    departmentContent.appendChild(sectionLink);
-                });
-
-                departmentHeader.onclick = () => toggleDepartment(departmentContent, departmentHeader.querySelector('.department-toggle'));
+                // Add FAQ section first
+                const faqSection = document.createElement('div');
+                faqSection.className = 'department-section';
                 
-                departmentDiv.appendChild(departmentHeader);
-                departmentDiv.appendChild(departmentContent);
-                sidebarContent.appendChild(departmentDiv);
-            });
-        }
+                const faqHeader = document.createElement('div');
+                faqHeader.className = 'department-header';
+                faqHeader.innerHTML = `
+                    <span>❓ FAQ</span>
+                    <span class="department-toggle">▼</span>
+                `;
+                
+                const faqContent = document.createElement('div');
+                faqContent.className = 'department-content expanded';
+                
+                const faqLink = document.createElement('a');
+                faqLink.href = '#';
+                faqLink.className = 'section-link';
+                faqLink.innerHTML = `
+                    <div class="resource-icon">📋</div>
+                    <span>Frequently Asked Questions</span>
+                `;
+                faqLink.onclick = (e) => {
+                    e.preventDefault();
+                    showFAQSection(faqLink);
+                };
+                
+                faqContent.appendChild(faqLink);
+                faqHeader.onclick = () => toggleDepartment(faqContent, faqHeader.querySelector('.department-toggle'));
+                
+                faqSection.appendChild(faqHeader);
+                faqSection.appendChild(faqContent);
+                sidebarContent.appendChild(faqSection);
+
+                // Add existing departments
+                Object.entries(knowledgeData).forEach(([departmentName, sections]) => {
+                    const departmentDiv = document.createElement('div');
+                    departmentDiv.className = 'department-section';
+
+                    const departmentHeader = document.createElement('div');
+                    departmentHeader.className = 'department-header';
+                    departmentHeader.innerHTML = `
+                        <span>🏢 ${departmentName}</span>
+                        <span class="department-toggle">▼</span>
+                    `;
+
+                    const departmentContent = document.createElement('div');
+                    departmentContent.className = 'department-content expanded';
+
+                    Object.entries(sections).forEach(([sectionName, resources]) => {
+                        const sectionLink = document.createElement('a');
+                        sectionLink.href = '#';
+                        sectionLink.className = 'section-link';
+                        sectionLink.innerHTML = `
+                            <div class="resource-icon">📁</div>
+                            <span>${sectionName} (${resources.length})</span>
+                        `;
+                        sectionLink.onclick = (e) => {
+                            e.preventDefault();
+                            showSection(departmentName, sectionName, resources, sectionLink);
+                        };
+                        departmentContent.appendChild(sectionLink);
+                    });
+
+                    departmentHeader.onclick = () => toggleDepartment(departmentContent, departmentHeader.querySelector('.department-toggle'));
+                    
+                    departmentDiv.appendChild(departmentHeader);
+                    departmentDiv.appendChild(departmentContent);
+                    sidebarContent.appendChild(departmentDiv);
+                });
+            }
 
         function showFilteredFAQs(faqs, searchTerm, linkElement) {
                 // Similar to showFAQSection but with filtered results
@@ -1899,33 +1866,77 @@
             }, 300);
         }
 
-        function  filterResources(searchTerm) {
-            if (!searchTerm.trim()) {
-                renderKnowledgeBase();
-                return;
-            }
+        function filterResources(searchTerm) {
+                    if (!searchTerm.trim()) {
+                        renderKnowledgeBase();
+                        return;
+                    }
 
-            const filteredData = {};
-            const term = searchTerm.toLowerCase();
+                    const filteredData = {};
+                    const term = searchTerm.toLowerCase();
 
-            Object.entries(knowledgeData).forEach(([dept, sections]) => {
-                Object.entries(sections).forEach(([section, resources]) => {
-                    const matchingResources = resources.filter(resource =>
-                        resource.name.toLowerCase().includes(term) ||
-                        resource.department.toLowerCase().includes(term) ||
-                        resource.section.toLowerCase().includes(term) ||
-                        (resource.url && resource.url.toLowerCase().includes(term))
+                    // Search in departments
+                    Object.entries(knowledgeData).forEach(([dept, sections]) => {
+                        Object.entries(sections).forEach(([section, resources]) => {
+                            const matchingResources = resources.filter(resource =>
+                                resource.name.toLowerCase().includes(term) ||
+                                resource.department.toLowerCase().includes(term) ||
+                                resource.section.toLowerCase().includes(term) ||
+                                (resource.url && resource.url.toLowerCase().includes(term))
+                            );
+
+                            if (matchingResources.length > 0) {
+                                if (!filteredData[dept]) filteredData[dept] = {};
+                                filteredData[dept][section] = matchingResources;
+                            }
+                        });
+                    });
+
+                    // Search in FAQs
+                    const matchingFAQs = faqData.filter(faq =>
+                        faq.question.toLowerCase().includes(term) ||
+                        faq.answer.toLowerCase().includes(term) ||
+                        faq.category.toLowerCase().includes(term) ||
+                        faq.subCategory.toLowerCase().includes(term)
                     );
 
-                    if (matchingResources.length > 0) {
-                        if (!filteredData[dept]) filteredData[dept] = {};
-                        filteredData[dept][section] = matchingResources;
-                    }
-                });
-            });
+                    // Render results
+                    const sidebarContent = document.getElementById('sidebarContent');
+                    sidebarContent.innerHTML = '';
 
-            renderFilteredResults(filteredData);
-        }
+                    // Add FAQ results if any
+                    if (matchingFAQs.length > 0) {
+                        const faqSection = document.createElement('div');
+                        faqSection.className = 'department-section';
+                        
+                        const faqHeader = document.createElement('div');
+                        faqHeader.className = 'department-header';
+                        faqHeader.innerHTML = `<span>❓ FAQ (${matchingFAQs.length} matches)</span>`;
+                        
+                        const faqContent = document.createElement('div');
+                        faqContent.className = 'department-content expanded';
+                        
+                        const faqLink = document.createElement('a');
+                        faqLink.href = '#';
+                        faqLink.className = 'section-link';
+                        faqLink.innerHTML = `
+                            <div class="resource-icon">📋</div>
+                            <span>Search Results</span>
+                        `;
+                        faqLink.onclick = (e) => {
+                            e.preventDefault();
+                            showFilteredFAQs(matchingFAQs, searchTerm, faqLink);
+                        };
+                        
+                        faqContent.appendChild(faqLink);
+                        faqSection.appendChild(faqHeader);
+                        faqSection.appendChild(faqContent);
+                        sidebarContent.appendChild(faqSection);
+                    }
+
+                    // Add filtered departments
+                    renderFilteredResults(filteredData);
+                }
 
         function renderFilteredResults(filteredData) {
             const sidebarContent = document.getElementById('sidebarContent');
