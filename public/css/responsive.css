@@ -1,0 +1,117 @@
+/* Mobile Responsive Styles */
+
+/* Tablet and smaller */
+@media (max-width: 1024px) {
+    .knowledge-base {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        position: static;
+        order: 2;
+    }
+    
+    .content-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .header {
+        padding: 32px 24px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .source-indicator-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* Chat Widget Mobile */
+    #chat-widget-container {
+        bottom: 20px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+        height: 70vh;
+        max-height: 600px;
+    }
+    
+    #chat-widget-button {
+        bottom: 20px;
+        right: 16px;
+        width: 56px;
+        height: 56px;
+        font-size: 1.3rem;
+    }
+    
+    #chat-widget-body {
+        padding: 16px;
+    }
+    
+    #chat-widget-footer {
+        padding: 16px;
+    }
+    
+    #chat-widget-header {
+        padding: 20px;
+    }
+
+    /* FAQ Responsive */
+    .faq-header {
+        padding: 24px;
+    }
+    
+    .faq-category {
+        padding: 16px;
+    }
+    
+    .faq-question {
+        padding: 16px;
+    }
+    
+    .faq-answer-content {
+        padding: 16px;
+    }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .resource-card {
+        padding: 24px;
+    }
+    
+    .content-header {
+        padding: 24px;
+    }
+    
+    .content-body {
+        padding: 24px;
+    }
+}
