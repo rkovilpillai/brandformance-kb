@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowledge Base - Team Hub</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/geist-font/1.0.0/fonts/geist-sans/style.min.css">
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -1092,188 +1092,83 @@
                 padding: 16px;
             }
         }
-        /* Chat Widget Styles */
-        .chat-widget {
+       /* Chat Widget Styling */
+        #chat-widget-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 9999;
-            font-family: inherit;
-        }
-
-        .chat-toggle {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 16px 24px;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .chat-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-xl);
-            background: linear-gradient(135deg, var(--primary-blue-hover), var(--secondary-purple-hover));
-        }
-
-        .chat-toggle.chat-open {
-            border-radius: 12px 12px 0 0;
-            box-shadow: none;
-        }
-
-        .chat-icon {
-            font-size: 1.2rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-5px); }
-            60% { transform: translateY(-3px); }
-        }
-
-        .chat-container {
-            position: absolute;
-            bottom: 60px;
-            right: 0;
-            width: 400px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             background: white;
-            border-radius: 12px 12px 0 12px;
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-color);
-            transform: translateY(20px) scale(0.95);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
             overflow: hidden;
         }
-
-        .chat-container.open {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, var(--gray-800), var(--gray-700));
+        #chat-widget-header {
+            background: #854fff;
             color: white;
-            padding: 16px 20px;
+            padding: 20px;
+            font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            font-size: 18px;
         }
-
-        .chat-title {
+        #chat-widget-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        /* Increased spacing between messages */
+        #chat-widget-body p {
+            margin-bottom: 15px; /* Adjust spacing between messages */
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            word-wrap: break-word;
+        }
+        #chat-widget-footer {
+            padding: 12px;
+            border-top: 1px solid #ddd;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 1rem;
+            gap: 10px;
         }
-
-        .chat-bot-icon {
-            font-size: 1.2rem;
+        #chat-widget-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
         }
-
-        .chat-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-minimize,
-        .chat-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
+        #chat-widget-send {
+            background: #854fff;
             color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
+        }
+        /* Make the chat bubble a perfect circle */
+        #chat-widget-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #854fff;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1001;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            transition: background-color 0.2s ease;
-        }
-
-        .chat-minimize:hover,
-        .chat-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .chat-content {
-            height: calc(100% - 60px);
-            position: relative;
-        }
-
-        .chat-content iframe {
-            border: none;
-            background: #f9fafb;
-        }
-
-        /* Chat Widget Responsive */
-        @media (max-width: 768px) {
-            .chat-widget {
-                bottom: 80px;
-                right: 16px;
-                left: 16px;
-            }
-            
-            .chat-container {
-                width: 100%;
-                height: 70vh;
-                max-height: 500px;
-                position: fixed;
-                bottom: 140px;
-                left: 16px;
-                right: 16px;
-                border-radius: 12px;
-            }
-            
-            .chat-toggle {
-                width: 100%;
-                justify-content: center;
-                border-radius: 12px;
-            }
-            
-            .chat-toggle.chat-open {
-                border-radius: 12px;
-            }
-        }
-
-        /* Hide chat widget when not authenticated */
-        .auth-modal ~ .container .chat-widget {
-            display: none !important;
-        }
-
-        /* Chat notification dot */
-        .chat-toggle::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 12px;
-            height: 12px;
-            background: #ef4444;
-            border-radius: 50%;
-            border: 2px solid white;
-            animation: pulse 2s infinite;
-            display: none; /* Show this when you want to indicate new messages */
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -1387,6 +1282,105 @@
             </div>
         </div>
     </div>
+   
+    <!-- Chat Toggle Button
+    <button id="chatToggle" class="chat-toggle" onclick="toggleChat()">
+        <span class="chat-icon">💬</span>
+        <span class="chat-text">Chat Support</span>
+    </button> -->
+    
+   <!-- Chat Widget Button -->
+    <button id="chat-widget-button">💬</button>
+
+    <!-- Chat Widget -->
+    <div id="chat-widget-container">
+        <div id="chat-widget-header">
+            <span>Chat</span>
+            <button onclick="closeChatWidget()">✖</button>
+        </div>
+        <div id="chat-widget-body">
+            <p style="margin-bottom: 20px;"><strong>Hi 👋, how can we help?</strong></p>
+        </div>
+        <div id="chat-widget-footer">
+            <input type="text" id="chat-widget-input" placeholder="Type your message here...">
+            <button id="chat-widget-send">Send</button>
+        </div>
+    </div>
+
+    <script>
+         window.ChatWidgetConfig = {
+            webhook: {
+                url: 'https://rajkpillai.app.n8n.cloud/webhook/a85a5d4a-d06e-4caf-b17e-877b81d15c5b/chat',
+                route: 'general'
+            },
+            style: {
+                primaryColor: '#854fff',
+                secondaryColor: '#6b3fd4',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#333333'
+            }
+        };
+
+        // Function to generate or retrieve a unique chat ID
+        function getChatId() {
+            let chatId = sessionStorage.getItem("chatId");
+            if (!chatId) {
+                chatId = "chat_" + Math.random().toString(36).substr(2, 9); // Unique ID
+                sessionStorage.setItem("chatId", chatId);
+            }
+            return chatId;
+        }
+
+        // Show chat widget and hide bubble
+        document.getElementById("chat-widget-button").addEventListener("click", function() {
+            document.getElementById("chat-widget-container").style.display = "flex";
+            document.getElementById("chat-widget-button").style.display = "none";
+        });
+
+        // Close chat widget and show bubble
+        function closeChatWidget() {
+            document.getElementById("chat-widget-container").style.display = "none";
+            document.getElementById("chat-widget-button").style.display = "flex";
+        }
+
+        // Send message to n8n webhook
+        document.getElementById("chat-widget-send").addEventListener("click", function() {
+            let message = document.getElementById("chat-widget-input").value;
+            if (message.trim() === "") return;
+
+            let chatBody = document.getElementById("chat-widget-body");
+            let newMessage = document.createElement("p");
+            newMessage.textContent = message;
+            newMessage.style.color = "#333";
+            newMessage.style.background = "#f1f1f1";
+            chatBody.appendChild(newMessage);
+
+            let chatId = getChatId(); // Retrieve the session chat ID
+
+            fetch(window.ChatWidgetConfig.webhook.url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chatId: chatId,  // Attach chat ID for memory tracking
+                    message: message,
+                    route: window.ChatWidgetConfig.webhook.route
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let botMessage = document.createElement("p");
+                botMessage.innerHTML = data.output || "Sorry, I couldn't understand that.";
+                botMessage.style.color = "#fff";
+                botMessage.style.background = "#854fff";
+                botMessage.style.marginTop = "10px";
+                chatBody.appendChild(botMessage);
+            })
+            .catch(error => console.error("Error:", error));
+
+            document.getElementById("chat-widget-input").value = "";
+        });
+    </script>
 
     <script>
         // Application state
@@ -2255,106 +2249,12 @@
         document.head.appendChild(style);
 
         console.log('📚 Knowledge Base app loaded and ready!');
-        // Chat Widget Functions
-        let chatOpen = false;
+        
+        // Chat code starts 
 
-        function toggleChat() {
-            if (chatOpen) {
-                closeChat();
-            } else {
-                openChat();
-            }
-        }
-
-        function openChat() {
-            const container = document.getElementById('chatContainer');
-            const toggle = document.getElementById('chatToggle');
-            const iframe = document.getElementById('chatIframe');
-            
-            container.classList.add('open');
-            toggle.classList.add('chat-open');
-            toggle.innerHTML = `
-                <span class="chat-icon">💬</span>
-                <span class="chat-text">Chat Open</span>
-            `;
-            
-            chatOpen = true;
-            
-            // Reload iframe to ensure fresh chat session
-            if (iframe.src) {
-                iframe.src = iframe.src;
-            }
-            
-            // Track chat open event
-            console.log('💬 Chat opened');
-        }
-
-        function closeChat() {
-            const container = document.getElementById('chatContainer');
-            const toggle = document.getElementById('chatToggle');
-            
-            container.classList.remove('open');
-            toggle.classList.remove('chat-open');
-            toggle.innerHTML = `
-                <span class="chat-icon">💬</span>
-                <span class="chat-text">Chat Support</span>
-            `;
-            
-            chatOpen = false;
-            console.log('💬 Chat closed');
-        }
-
-        function minimizeChat() {
-            closeChat();
-        }
-
-        // Show chat widget after successful authentication
-        function showChatWidget() {
-            const chatWidget = document.getElementById('chatWidget');
-            if (chatWidget) {
-                chatWidget.classList.remove('hidden');
-            }
-        }
-
-        // Hide chat widget on sign out
-        function hideChatWidget() {
-            const chatWidget = document.getElementById('chatWidget');
-            if (chatWidget) {
-                chatWidget.classList.add('hidden');
-                closeChat();
-            }
-        }
+       
     </script>
     <!-- Chat Widget -->
-<div id="chatWidget" class="chat-widget hidden">
-    <!-- Chat Toggle Button -->
-    <button id="chatToggle" class="chat-toggle" onclick="toggleChat()">
-        <span class="chat-icon">💬</span>
-        <span class="chat-text">Chat Support</span>
-    </button>
-    
-    <!-- Chat Container -->
-    <div id="chatContainer" class="chat-container">
-        <div class="chat-header">
-            <div class="chat-title">
-                <span class="chat-bot-icon">🤖</span>
-                <span>Seedtag Assistant</span>
-            </div>
-            <div class="chat-actions">
-                <button onclick="minimizeChat()" class="chat-minimize">−</button>
-                <button onclick="closeChat()" class="chat-close">×</button>
-            </div>
-        </div>
-        <div class="chat-content">
-            <iframe 
-                id="chatIframe" 
-                src="https://rajkpillai.app.n8n.cloud/webhook/a85a5d4a-d06e-4caf-b17e-877b81d15c5b/chat"
-                frameborder="0"
-                width="100%"
-                height="100%">
-            </iframe>
-        </div>
-    </div>
-</div>
+
 </body>
 </html>
